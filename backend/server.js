@@ -7,8 +7,8 @@ const studentRoutes = require('./routes/students');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const path = require('path');
 
-const path = require("path");
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -16,24 +16,22 @@ app.use(express.json());
 // Routes
 app.use('/students', studentRoutes);
 
-// Health check
-/* app.get('/', (req, res) => {
-  res.json({ message: 'Student Record API is running.' });
-}); */
+// -----------comment these if using 2 separate VMs (backend VM + frontend VM)
+// If using 1 VM: uncomment these AND run 'npm run build' in frontend first
+// NOTE: Vite builds to 'dist/', NOT 'build/' like CRA
 
-// Serve React build
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+// app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
-});
+// app.use((req, res) => {
+//   res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
+// });
 
 // Connect to MongoDB and start server
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected successfully.');
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
   })
